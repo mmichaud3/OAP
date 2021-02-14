@@ -1,0 +1,26 @@
+h2 {
+  color: rgb(46, 144, 201);
+}
+p {
+  font-size: 1vw;
+}
+.author {
+  font-style: italic;
+  font-weight: 500;
+}
+.rounded {
+  border-top: 2px solid #bbb;
+  border-radius: 5px;
+}
+.commentAuthor {
+  color: rgb(66, 65, 65);
+}
+.comments {
+  margin-left: 5rem;
+}
+h3 {
+  color: rgb(8, 179, 122);
+}
+.comment {
+  margin-bottom: 2rem;
+}
