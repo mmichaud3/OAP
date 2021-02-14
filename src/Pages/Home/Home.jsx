@@ -31,27 +31,39 @@ const GET_POSTS = gql`
 function Home() {
   const { loading, error, data } = useQuery(GET_POSTS);
   const [count, setCount] = useState(5);
-  const [pageCount, setPageCount] = useState(0);
-  const [first, setFirst] = useState(5);
+  const [pageCount, setPageCount] = useState(2);
+  const [last, setLast] = useState(5);
+  const [first, setFirst] = useState(0);
+  const [firstPage, setFirstPage] = useState(1);
 
   const onSelect = () => {
+    setLast(parseInt(document.getElementById('perPage').value));
     setCount(parseInt(document.getElementById('perPage').value));
+    setPageCount(
+      data.posts.data.length / document.getElementById('perPage').value
+    );
+    setFirstPage(1);
+    setFirst(0);
   };
 
   const pageClickPrev = () => {
-    if (pageCount > 0) {
+    if (first > 0) {
+      setLast(last - count);
       setFirst(first - count);
-      setPageCount(pageCount - count);
+      setFirstPage(firstPage - 1);
     }
   };
   const pageClickNext = () => {
-    if (first <= 10) {
+    if (last < 10) {
+      setLast(last + count);
       setFirst(first + count);
-      setPageCount(pageCount + count);
+      setFirstPage(firstPage + 1);
     }
   };
-  if (loading) return <Spinner />;
-  return (
+
+  return loading ? (
+    <Spinner />
+  ) : (
     <div className={Styles.home}>
       <div className={Styles.header}>
         <h1>Posts</h1>
@@ -70,11 +82,17 @@ function Home() {
             <option value='10'>10</option>
           </select>
           <div className={Styles.btns}>
-            <button className='btn1' onClick={pageClickPrev}>
-              Prev
+            <button onClick={pageClickPrev}>Prev</button>
+            <button onClick={pageClickNext}>Next</button>
+          </div>
+          <div className={Styles.display}>
+            <p>Page</p>
+            <button className={Styles.btn} disabled>
+              {firstPage}
             </button>
-            <button className='btn2' onClick={pageClickNext}>
-              Next
+            <p>Of</p>
+            <button className={Styles.btn} disabled>
+              {pageCount}
             </button>
           </div>
         </div>
@@ -82,7 +100,7 @@ function Home() {
 
       {data && (
         <>
-          {data.posts.data.slice(pageCount, first).map((d) => (
+          {data.posts.data.slice(first, last).map((d) => (
             <Post
               key={d.id}
               link={d}
